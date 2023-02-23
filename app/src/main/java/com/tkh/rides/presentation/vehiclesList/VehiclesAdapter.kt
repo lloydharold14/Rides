@@ -1,5 +1,6 @@
 package com.tkh.rides.presentation.vehiclesList
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -26,22 +27,23 @@ class VehiclesAdapter : RecyclerView.Adapter<VehiclesAdapter.VehicleViewHolder>(
     val differ = AsyncListDiffer(this, differCallback)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VehicleViewHolder {
-            val binding =
-                ItemVehicleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemVehicleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-            return VehicleViewHolder(binding)
-        }
+        return VehicleViewHolder(binding)
+    }
 
     override fun getItemCount(): Int {
         return differ.currentList.size
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: VehicleViewHolder, position: Int) {
-        with(holder){
+        with(holder) {
             val vehicle = differ.currentList[position]
-            with(vehicle){
-                binding.tvMakeModel.text = this.make_and_model
-                binding.tvVin.text = this.vin
+            with(vehicle) {
+                binding.tvMakeModel.text = "Make: ${this.make_and_model}"
+                binding.tvVin.text = "Vin: ${this.vin}"
 
                 itemView.setOnClickListener {
                     onItemClickListener?.let { it(vehicle) }

@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tkh.rides.R
@@ -29,6 +30,7 @@ class VehicleListFragment : Fragment(R.layout.fragment_vehicle_list) {
         setupObserver()
         getVehicleListSize()
         viewVehiclesList()
+        viewVehicleDetails()
 
     }
 
@@ -52,7 +54,11 @@ class VehicleListFragment : Fragment(R.layout.fragment_vehicle_list) {
 
     private fun viewVehicleDetails() {
         adapter.setOnItemClickListener {
-            //TODO IMPLEMENT ONITEM CLICKED
+            findNavController().navigate(
+                VehicleListFragmentDirections.actionVehicleListFragmentToVehicleDetailsFragment(
+                    it
+                )
+            )
         }
     }
 
@@ -61,6 +67,7 @@ class VehicleListFragment : Fragment(R.layout.fragment_vehicle_list) {
             viewModel.onEvent(ListEvent.OnSearch)
         }
     }
+
     private fun setupObserver() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
