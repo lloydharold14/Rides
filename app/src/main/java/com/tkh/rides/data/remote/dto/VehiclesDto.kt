@@ -1,6 +1,8 @@
 package com.tkh.rides.data.remote.dto
 
-data class VehiclesDtoItem(
+import com.tkh.rides.domain.model.Vehicle
+
+data class VehiclesDto(
     val car_options: List<String>,
     val car_type: String,
     val color: String,
@@ -17,3 +19,16 @@ data class VehiclesDtoItem(
     val uid: String,
     val vin: String
 )
+
+fun VehiclesDto.toVehicle(
+
+): Vehicle {
+    return Vehicle(
+        id = id,
+        color = color,
+        car_type = car_type,
+        kilometrage = kilometrage,
+        make_and_model = make_and_model,
+        vin = vin
+    )
+}

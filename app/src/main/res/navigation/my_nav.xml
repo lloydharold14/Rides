@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/vehicleListFragment"
-        android:name="com.tkh.rides.presentation.VehicleListFragment"
+        android:name="com.tkh.rides.presentation.vehiclesList.VehicleListFragment"
         android:label="fragment_vehicle_list"
         tools:layout="@layout/fragment_vehicle_list" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/vehicleDetailsFragment"
-        android:name="com.tkh.rides.presentation.VehicleDetailsFragment"
+        android:name="com.tkh.rides.presentation.vehicleDetails.VehicleDetailsFragment"
         android:label="fragment_vehicle_details"
         tools:layout="@layout/fragment_vehicle_details" >
         <action

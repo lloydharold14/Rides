@@ -1,22 +1,13 @@
 package com.tkh.rides.data.remote
 
-
+import com.tkh.rides.data.remote.dto.VehiclesDto
 import retrofit2.http.GET
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface RidesApi {
-
-    @GET("recipes/complexSearch?/")
-    suspend fun searchRecipe(
-        @Query("query") query: String,
-        @Query("apiKey") apiKey: String
-    ): SearchResponse
-
-    @GET("recipes/{recipeId}/information?includeNutrition=false")
-    suspend fun getRecipeDetails(
-        @Path("recipeId") id: Int,
-        @Query("apiKey") apiKey: String
-    ): RecipeDetailsDto
+    @GET("vehicle/random_vehicle?")
+    suspend fun vehiclesList(
+        @Query("size") size: String
+    ): List<VehiclesDto>
 
 }

@@ -1,4 +1,4 @@
-package com.tkh.rides.presentation
+package com.tkh.rides.presentation.vehicleDetails
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,14 +8,13 @@ import android.view.ViewGroup
 import com.tkh.rides.R
 
 
-class VehicleListFragment : Fragment() {
+class VehicleDetailsFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_vehicle_list, container, false)
+        return inflater.inflate(R.layout.fragment_vehicle_details, container, false)
     }
-
 }
