@@ -11,9 +11,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tkh.rides.R
 import com.tkh.rides.databinding.FragmentVehicleListBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -28,6 +30,7 @@ class VehicleListFragment : Fragment(R.layout.fragment_vehicle_list) {
         binding = FragmentVehicleListBinding.bind(view)
         setupRecyclerView()
         setupObserver()
+        setupMessageObserver()
         getVehicleListSize()
         viewVehiclesList()
         viewVehicleDetails()
@@ -35,7 +38,7 @@ class VehicleListFragment : Fragment(R.layout.fragment_vehicle_list) {
     }
 
     private fun getVehicleListSize() {
-        binding.etSearch.setText(viewModel.size.value.toString())
+        binding.etSearch.setText(viewModel.uiState.value.size.toString())
         binding.etSearch.addTextChangedListener { editable ->
             editable?.let {
                 if (editable.toString().isNotEmpty()) {
@@ -68,21 +71,37 @@ class VehicleListFragment : Fragment(R.layout.fragment_vehicle_list) {
         }
     }
 
+    private fun setupMessageObserver() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                viewModel.eventFlow.collectLatest { event ->
+                    when (event) {
+                        is ListEvent.onError -> {
+                            Snackbar.make(binding.root, event.message, Snackbar.LENGTH_LONG).show()
+                        }
+                        else -> {}
+                    }
+                }
+            }
+        }
+    }
+
     private fun setupObserver() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect {
-                    when (it) {
-                        is UiState.Success -> {
-                            adapter.differ.submitList(it.data)
+
+                viewModel.uiState.collectLatest {
+                    when {
+                        it.vehicles.isNotEmpty() -> {
+                            adapter.differ.submitList(it.vehicles)
                             binding.rvSearchVehicles.visibility = View.VISIBLE
                         }
-                        is UiState.Loading -> {
-                            binding.rvSearchVehicles.visibility = View.GONE
-                        }
-                        is UiState.Error -> {
+
+                        it.isSearching -> {
 
                         }
+
                     }
                 }
             }

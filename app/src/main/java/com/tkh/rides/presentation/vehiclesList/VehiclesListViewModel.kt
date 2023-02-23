@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tkh.rides.domain.model.Vehicle
 import com.tkh.rides.domain.repository.RidesRepository
+import com.tkh.rides.domain.use_case.CheckSizeRange
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -14,37 +16,61 @@ class VehiclesListViewModel @Inject constructor(
     private val repository: RidesRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<UiState<List<Vehicle>>>(UiState.Loading)
-    val uiState: StateFlow<UiState<List<Vehicle>>> = _uiState
+    private val _uiState = MutableStateFlow(VehicleUiState(size = 1))
+    val uiState: StateFlow<VehicleUiState> = _uiState.asStateFlow()
 
-    private val _size = MutableStateFlow(0)
-    val size = _size.asStateFlow()
+    private val eventChannel = Channel<ListEvent>()
+    val eventFlow = eventChannel.receiveAsFlow()
 
     fun onEvent(event: ListEvent) {
 
         when (event) {
             is ListEvent.OnSizeChange -> {
-                _size.value = event.size
+                _uiState.update {
+                    it.copy(
+                        size = event.size
+                    )
+                }
             }
 
             is ListEvent.OnSearch -> {
-                getVehicles()
+
+                val inRange = CheckSizeRange().invoke(_uiState.value.size)
+
+                if (inRange) {
+
+                    getVehicles()
+                } else {
+                    triggerErrorMessage()
+                }
             }
 
-            is ListEvent.OnCarClick -> {
+            is ListEvent.onError -> {
 
             }
         }
     }
 
+    fun triggerErrorMessage() = viewModelScope.launch {
+        eventChannel.send(ListEvent.onError("The number should be in the range 1 to 100"))
+    }
 
-    fun getVehicles() {
+    private fun getVehicles() {
         viewModelScope.launch {
-            _uiState.value = UiState.Loading
+            _uiState.update {
+                it.copy(
+                    isSearching = true
+                )
+            }
 
-            repository.getVehicleList(_size.value)
+            repository.getVehicleList(_uiState.value.size)
                 .collect { vehicles ->
-                    _uiState.value = UiState.Success(vehicles)
+                    _uiState.update {
+                        it.copy(
+                            isSearching = false,
+                            vehicles = vehicles
+                        )
+                    }
                 }
         }
     }
@@ -54,15 +80,14 @@ class VehiclesListViewModel @Inject constructor(
 sealed class ListEvent {
     data class OnSizeChange(val size: Int) : ListEvent()
     object OnSearch : ListEvent()
-    object OnCarClick : ListEvent()
+
+    data class onError(val message: String) : ListEvent()
 }
 
-sealed interface UiState<out T> {
 
-    data class Success<T>(val data: T) : UiState<T>
+data class VehicleUiState(
 
-    data class Error(val message: String) : UiState<Nothing>
-
-    object Loading : UiState<Nothing>
-
-}
+    val size: Int,
+    val isSearching: Boolean = false,
+    val vehicles: List<Vehicle> = emptyList()
+)
