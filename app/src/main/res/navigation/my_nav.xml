@@ -8,8 +8,8 @@
     <fragment
         android:id="@+id/vehicleListFragment"
         android:name="com.tkh.rides.presentation.vehiclesList.VehicleListFragment"
-        android:label="fragment_vehicle_list"
-        tools:layout="@layout/fragment_vehicle_list" >
+        android:label="Vehicles List"
+        tools:layout="@layout/fragment_vehicle_list">
         <action
             android:id="@+id/action_vehicleListFragment_to_vehicleDetailsFragment"
             app:destination="@id/vehicleDetailsFragment" />
@@ -17,13 +17,32 @@
     <fragment
         android:id="@+id/vehicleDetailsFragment"
         android:name="com.tkh.rides.presentation.vehicleDetails.VehicleDetailsFragment"
-        android:label="fragment_vehicle_details"
-        tools:layout="@layout/fragment_vehicle_details" >
+        android:label="Vehicle Details"
+        tools:layout="@layout/fragment_vehicle_details">
         <action
             android:id="@+id/action_vehicleDetailsFragment_to_vehicleListFragment"
             app:destination="@id/vehicleListFragment" />
         <argument
             android:name="vehicle"
             app:argType="com.tkh.rides.domain.model.Vehicle" />
+        <action
+            android:id="@+id/action_vehicleDetailsFragment_to_estimatedCarbonFragment"
+            app:destination="@id/estimatedCarbonFragment" />
+
     </fragment>
+    <dialog
+        android:id="@+id/estimatedCarbonFragment"
+        android:name="com.tkh.rides.presentation.estimatedCarbon.EstimatedCarbonFragment"
+        android:label="fragment_estimated_carbon"
+        tools:layout="@layout/fragment_estimated_carbon">
+
+        <action
+            android:id="@+id/action_estimatedCarbonFragment_to_vehicleDetailsFragment"
+            app:destination="@id/vehicleDetailsFragment" />
+        <argument
+            android:name="kilometrage"
+            app:argType="integer" />
+    </dialog>
+
+
 </navigation>

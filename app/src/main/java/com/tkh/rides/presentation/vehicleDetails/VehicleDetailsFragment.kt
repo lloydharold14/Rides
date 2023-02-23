@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.tkh.rides.R
 import com.tkh.rides.databinding.FragmentVehicleDetailsBinding
@@ -19,6 +20,14 @@ class VehicleDetailsFragment : Fragment(R.layout.fragment_vehicle_details) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentVehicleDetailsBinding.bind(view)
         showVehicleDetails()
+
+        binding.fabEmission.setOnClickListener {
+            findNavController().navigate(
+                VehicleDetailsFragmentDirections.actionVehicleDetailsFragmentToEstimatedCarbonFragment(
+                    mVehicle.kilometrage
+                )
+            )
+        }
     }
 
     @SuppressLint("SetTextI18n")
