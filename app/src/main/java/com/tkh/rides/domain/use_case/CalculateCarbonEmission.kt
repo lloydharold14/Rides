@@ -4,7 +4,6 @@ import kotlin.math.roundToInt
 
 class CalculateCarbonEmission {
 
-
     operator fun invoke(kilometrage: Int): Int {
 
         var c02Emitted: Int

@@ -20,7 +20,7 @@ class EstimatedCarbonFragment : BottomSheetDialogFragment(R.layout.fragment_esti
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentEstimatedCarbonBinding.bind(view)
 
-        var estimatedCarbon = viewModel.getEstimatedCarbon(navigationArgs.kilometrage)
+        val estimatedCarbon = viewModel.getEstimatedCarbon(navigationArgs.kilometrage)
 
         binding.tvCarbon.text = "The estimated carbon emission is $estimatedCarbon"
     }

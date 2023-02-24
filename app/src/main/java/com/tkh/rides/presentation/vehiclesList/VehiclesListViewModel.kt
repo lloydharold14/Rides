@@ -38,43 +38,30 @@ class VehiclesListViewModel @Inject constructor(
                 val inRange = CheckSizeRange().invoke(_uiState.value.size)
 
                 if (inRange) {
-
                     getVehicles()
                 } else {
                     triggerErrorMessage()
                 }
             }
-
-            is ListEvent.onError -> {
-
-            }
+            else -> {}
         }
     }
 
-    fun triggerErrorMessage() = viewModelScope.launch {
+    private fun triggerErrorMessage() = viewModelScope.launch {
         eventChannel.send(ListEvent.onError("The number should be in the range 1 to 100"))
     }
 
-    private fun getVehicles() {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isSearching = true
-                )
-            }
+    fun getVehicles() = viewModelScope.launch {
 
-            repository.getVehicleList(_uiState.value.size)
-                .collect { vehicles ->
-                    _uiState.update {
-                        it.copy(
-                            isSearching = false,
-                            vehicles = vehicles
-                        )
-                    }
+        repository.getVehicleList(_uiState.value.size)
+            .collect { vehicles ->
+                _uiState.update {
+                    it.copy(
+                        vehicles = vehicles
+                    )
                 }
-        }
+            }
     }
-
 }
 
 sealed class ListEvent {
@@ -88,6 +75,5 @@ sealed class ListEvent {
 data class VehicleUiState(
 
     val size: Int,
-    val isSearching: Boolean = false,
     val vehicles: List<Vehicle> = emptyList()
 )
